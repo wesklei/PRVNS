@@ -1748,8 +1748,6 @@ void grafico_linhas_x_y(char *data, char *xtitle, char *ytitle, char *title, cha
 	fflush(f_data);
 	fclose(f_data);
 
-	if(data != NULL)
-	free(data);
 	fprintf(gnuplotPipe," set bmargin 7 \n"); 
 	fprintf(gnuplotPipe," unset colorbox \n");
 	fprintf(gnuplotPipe," set terminal png enhanced font 'Verdana,10' \n");
