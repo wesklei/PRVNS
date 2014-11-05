@@ -41,7 +41,6 @@ typedef struct _VNS_SOLUTION
 
 typedef struct _VNS
 {
-	int MAX_AVAL; /*The number of avaliation*/
 	int P; /*The metric used, l1,l2,l_inf */
 	int FUNCTION;
 	//Problem definitions
@@ -101,8 +100,6 @@ void *PRVNS(void *arg);
 //aux functions
 void printvector(double* x, const int DIM, char* seq);
 void calculateStatistic(pVNS **sol, int maxr);
-int GetParameters(FILE *file, int* POP_SIZE, int* MAX_AVAL, int* FUNCTION, int* DIM, int* RUN);
-void showParameters(int* POP_SIZE, int* MAX_AVAL, int* FUNCTION, int* DIM, int* RUN);
 void freeArrays(int* POP_SIZE, double** pop, double* fo, double* best);
 void AllocArrays(int* POP_SIZE, int* DIM, double*** pop, double** fo, double** best, double** U);
 void grafico_linhas_x_y(char *data, char *xtitle, char *ytitle, char *title, char *legend, char *filename);
@@ -133,36 +130,26 @@ int main(int argc, char **argv)
 		return 0;
 	}
 	/* Control Parameters of the search algorithm*/
-	int POP_SIZE;  /* The number of candidate solutions*/
-	int MAX_AVAL = 0; /*The number of avaliation*/
 	int FUNCTION;
 	//Problem definitions
-	int DIM;    //number of problem variables
 	int RUN;  /*Algorithm can run many times in order to see its robustness*/
 	int i, j;
 	double lb; //lower bound of the variables
 	double ub; //upper bound of the variables
 
-
         pVNS *vns_run = (pVNS *) malloc (sizeof (pVNS));
 	//read input file
 	FILE *file = fopen( argv[1], "r" );
-	if (
-			GetParameters(file,&POP_SIZE,&MAX_AVAL,&FUNCTION,&DIM,&RUN) == -1 ||
-			getParametersVNS(file,vns_run) == -1 ){	//read input file
+	if (getParametersVNS(file,vns_run) == -1 ){	//read input file
 		return 0;
 	}
 	fclose(file);
 
-	showParameters(&POP_SIZE, &MAX_AVAL, &FUNCTION, &DIM, &RUN);
 	showParametersVNS(vns_run);
 
+	RUN = vns_run->RUN;
+	FUNCTION = vns_run->FUNCTION;
 	prepararObjFunc(&FUNCTION,&lb,&ub);//initialize variables needed by function
-
-	vns_run->DIM = DIM;
-	vns_run->MAX_AVAL = MAX_AVAL;
-	vns_run->RUN = RUN;
-	vns_run->FUNCTION = FUNCTION;
 	vns_run->LB = lb;
 	vns_run->UB = ub;
 
@@ -205,6 +192,39 @@ int main(int argc, char **argv)
 				bestfo_mediaGeracoes = (double*) malloc(sizeof(double) * vns_run->TMAX + 2);
 			}
 	}	
+
+
+	double *r = (double*)malloc ( (vns_run->KMAX+1) *sizeof(double));
+	double radii = vns_run->RADII;
+	switch(vns_run->METHOD)
+	{
+		case 3:
+		case 4:
+		case 5:
+			printf("Valores de raio usando PG e razao %f:\n",vns_run->Q);
+			//set wich radii value
+			r[0] = 0.0f;
+			for(j=1;j<=vns_run->KMAX;j++){
+				r[j] = radii;
+				radii*=vns_run->Q;
+			}
+			for(j=1;j<=vns_run->KMAX;j++){
+				printf("k_%d => radii=%f \n",j,r[j]);
+			}
+			break;
+
+		case 6:
+			printf("Valores de raio usando PG e razao %f:\n",vns_run->Q);
+			r[0] = 0.1f;
+			r[1] = 0.3f;
+			r[2] = 0.5f;
+			r[3] = 0.7f;
+			r[4] = 0.9f;
+			for(j=0;j<vns_run->KMAX;j++){
+				printf("k_%d => radii=%f \n",j+1,r[j]);
+			}
+			break;
+	}
 
 	for(i=0;i<maxr;i++){
 
@@ -431,11 +451,14 @@ void freeArrays(int* POP_SIZE, double** pop, double* fo, double* best)/* Free ar
 
 int getParametersVNS(FILE *file, pVNS *vns)
 {
-	int *P,*ECO_STEP,*EVO_STEP,*VNS_POP,*G_MAX;
+	int *P,*ECO_STEP,*EVO_STEP,*VNS_POP,*G_MAX,*FUNCTION,*DIM,*RUN;
 	int *KMAX,*TMAX,*AVAL_MAX,*METHOD;
 	int *RADII_T_FLAG;
 	double *Q,*RADII,*RHO,*EPSILON,*PC;
 
+	FUNCTION = (int*) malloc(sizeof(int));
+	DIM = (int*) malloc(sizeof(int));
+	RUN = (int*) malloc(sizeof(int));
 	ECO_STEP = (int*) malloc(sizeof(int));
 	EVO_STEP = (int*) malloc(sizeof(int));
 	VNS_POP = (int*) malloc(sizeof(int));
@@ -459,6 +482,9 @@ int getParametersVNS(FILE *file, pVNS *vns)
 	}
 	else 
 	{
+		ffscanf("RUN", file, "%d", &RUN);
+		ffscanf("DIM", file, "%d", &DIM); 
+		ffscanf("FUNCTION",file, "%d", &FUNCTION);
 		ffscanf("KMAX", file, "%d", &KMAX);
 		ffscanf("TMAX", file, "%d", &TMAX);
 		ffscanf("Q", file, "%lf", &Q);
@@ -475,6 +501,9 @@ int getParametersVNS(FILE *file, pVNS *vns)
 		ffscanf("G_MAX", file, "%d", &G_MAX); 
 		ffscanf("PC", file, "%lf", &PC); 
 
+		vns->RUN = *RUN;
+		vns->DIM = *DIM;
+		vns->FUNCTION = *FUNCTION;
 		vns->KMAX = *KMAX;
 		vns->TMAX = *TMAX;
 		vns->Q = *Q;
@@ -495,54 +524,30 @@ int getParametersVNS(FILE *file, pVNS *vns)
 	}
 }
 
-int GetParameters(FILE *file, int* POP_SIZE, int* MAX_AVAL, int* FUNCTION, int* DIM, int* RUN)/*Input file reading*/
-{
-    
-	if (file == 0)
-	{
-		printf( "Could not open ini file! Usage ./<exec> <file.in>\n" );
-		return -1;
-	}
-	else 
-	{
-		ffscanf("RUN", file, "%d", &RUN);
-		ffscanf("MAX_AVAL", file, "%d", &MAX_AVAL);
-		ffscanf("POP_SIZE", file, "%d", &POP_SIZE);
-		ffscanf("DIM", file, "%d", &DIM); 
-		ffscanf("FUNCTION",file, "%d", &FUNCTION);
-		return 1;
-	}
-}
 
-void showParameters(int* POP_SIZE, int* MAX_AVAL, int* FUNCTION, int* DIM, int* RUN)
-{
-	printf("***PARAMETERS***\n");
-	printf("RUNS = %d\n", *RUN);
-	printf("MAX_AVAL = %d\n", *MAX_AVAL);
-	printf("POP_SIZE = %d\n", *POP_SIZE);
-	printf("DIM = %d\n", *DIM);
-	printf("FUNCTION = %s\n", getFunctionName(*FUNCTION));
-	printf("****************\n");
-}
 
 void showParametersVNS(pVNS *vns)
 {
 	printf("***VNS PARAMETERS***\n");
+	printf("RUNS = %d\n", vns->RUN);
+	printf("DIM = %d\n", vns->DIM);
+	printf("FUNCTION = %s\n", getFunctionName(vns->FUNCTION));
+	printf("METHOD = %d\n", vns->METHOD);
+	printf("****************\n");
 	printf("KMAX = %d\n",vns->KMAX);
 	printf("TMAX = %d\n", vns->TMAX);
 	printf("Q = %f\n", vns->Q);
 	printf("RADII = %f\n", vns->RADII);
 	printf("RADII_T_FLAG = %d\n", vns->RADII_T_FLAG);
+	printf("METRIC P = %d\n", vns->P);
+	printf("VNS_POP = %d\n", vns->VNS_POP);
+	printf("ECO_STEP = %d\n", vns->ECO_STEP);
+	printf("EVO_STEP = %d\n", vns->EVO_STEP);
 	printf("****************\n");
 	printf("***HOOKE AND JEEVES PARAMETERS***\n");
 	printf("AVAL_MAX = %d\n", vns->AVAL_MAX);
 	printf("RHO = %f\n", vns->RHO);
 	printf("EPSILON = %f\n", vns->EPSILON);
-	printf("METHOD = %d\n", vns->METHOD);
-	printf("METRIC P = %d\n", vns->P);
-	printf("VNS_POP = %d\n", vns->VNS_POP);
-	printf("ECO_STEP = %d\n", vns->ECO_STEP);
-	printf("EVO_STEP = %d\n", vns->EVO_STEP);
 	printf("****************\n");
 }
 
@@ -763,6 +768,7 @@ void *NM(void *arg){//Only Nelder Mead
 	}
 
     	time (&(vns->solv.etime));
+	vns->solv.t_total = difftime(vns->solv.etime,vns->solv.stime);
 
 	printf("\n==RUN: %d\n",run);
 	printf("Total number of avaliation with NM: %d\n",t);
@@ -776,7 +782,6 @@ void *NM(void *arg){//Only Nelder Mead
 	
 	free(x);
 	free(simplex);
-	vns->solv.t_total = difftime(vns->solv.etime,vns->solv.stime);
 
        return (void*)arg;
 	
@@ -814,11 +819,6 @@ void *BVNS_NM(void *arg){//VNSM com NM
 	for(j=vns->KMAX;j>=1;j--){
 		r[j] = vns->RADII;
 		vns->RADII*=vns->Q;
-	}
-
-	printf("Valores de raio usando PG e razao %f:\n",vns->Q);
-	for(j=1;j<=vns->KMAX;j++){
-		printf("k_%d => radii=%f \n",j,r[j]);
 	}
 
 	run = vns->RUN+1;
@@ -894,12 +894,14 @@ void *BVNS_NM(void *arg){//VNSM com NM
 
 	t--;
     	time (&(vns->solv.etime));
+	vns->solv.t_total = difftime(vns->solv.etime,vns->solv.stime);
 
 	printf("\n==RUN: %d\n",run);
 	/* printf("VNS total number of avaliations : %d\n",vns_geral_cont); */
 	/* printf("NM total number of avaliations: %d\n",nm_geral_cont); */
 	printf("Total number of avaliation: %d\n",t);
 	printf("Best solution found == %.10f\n",fx);
+	printf("Time: == %.0f seconds\n",vns->solv.t_total);
 
 	vns->solv.c_aval=t;
 	vns->solv.c_aval_best=best_aval;
@@ -911,7 +913,6 @@ void *BVNS_NM(void *arg){//VNSM com NM
 	free(x2);
 	free(y);
 	free(r);
-	vns->solv.t_total = difftime(vns->solv.etime,vns->solv.stime);
 
        return (void*)arg;
 	
@@ -966,10 +967,6 @@ void *RVNS(void *arg){//Reduced VNS
 	}
 	/* memcpy(vns->r,r,sizeof(double)* (vns->KMAX + 1)); */
 
-	printf("Valores de raio usando PG e razao %f:\n",vns->Q);
-	for(j=1;j<=vns->KMAX;j++){
-		printf("k_%d => radii=%f \n",j,vns->r[j]);
-	}
 
 	run = vns->RUN+1;
 
@@ -1061,10 +1058,12 @@ void *RVNS(void *arg){//Reduced VNS
 
 	}
     	time (&(vns->solv.etime));
+	vns->solv.t_total = difftime(vns->solv.etime,vns->solv.stime);
 
 	printf("\n==RUN: %d\n",run);
 	printf("Total number of avaliation: %d\n",t);
 	printf("Best solution found == %.10f\n",fx);
+	printf("Time: == %.0f seconds\n",vns->solv.t_total);
 
 	vns->solv.c_aval=t;
 	vns->solv.c_aval_best=best_aval;
@@ -1073,7 +1072,6 @@ void *RVNS(void *arg){//Reduced VNS
 	free(x);
 	free(y);
 	free(r);
-	vns->solv.t_total = difftime(vns->solv.etime,vns->solv.stime);
 
        return (void*)arg;
 	
@@ -1108,12 +1106,7 @@ void *BVNS(void *arg){//VNS com HJ
 		r[j] = vns->RADII;
 		vns->RADII*=vns->Q;
 	}
-	memcpy(vns->r,r,sizeof(double)*vns->DIM);
-
-	printf("Valores de raio usando PG e razao %f:\n",vns->Q);
-	for(j=1;j<=vns->KMAX;j++){
-		printf("k_%d => radii=%f \n",j,r[j]);
-	}
+	memcpy(vns->r,r,sizeof(double)*vns->KMAX+1);
 
 	run = vns->RUN+1;
 
@@ -1133,7 +1126,7 @@ void *BVNS(void *arg){//VNS com HJ
 	avalmax_aux = vns->AVAL_MAX;
 
     	time (&(vns->solv.stime));
-	while(t < vns->TMAX && !stop){
+	while(t < vns->TMAX -1 && !stop){
 		k=1;
 		while(k<=vns->KMAX && t< vns->TMAX && !stop){
 			/* t++; */
@@ -1170,12 +1163,14 @@ void *BVNS(void *arg){//VNS com HJ
 
 	}
     	time (&(vns->solv.etime));
+	vns->solv.t_total = difftime(vns->solv.etime,vns->solv.stime);
 
 	printf("\n==RUN: %d\n",run);
 	printf("VNS total number of avaliations : %d\n",vns_cont);
 	printf("Hooke total number of avaliations: %d\n",hooke_geral_cont);
 	printf("Total number of avaliation: %d\n",t);
 	printf("Best solution found == %.10f\n",fx);
+	printf("Time: == %.0f seconds\n",vns->solv.t_total);
 
 	vns->solv.c_aval=t;
 	vns->solv.c_aval_best=best_aval;
@@ -1184,9 +1179,9 @@ void *BVNS(void *arg){//VNS com HJ
 	printf("\n");
 	
 	free(x);
+	free(x2);
 	free(y);
 	free(r);
-	vns->solv.t_total = difftime(vns->solv.etime,vns->solv.stime);
 
        return (void*)arg;
 	
@@ -1539,7 +1534,7 @@ void *PRVNS(void *arg){//Populational Reduced VNS
 	
 
     	time (&(vns->solv.stime));
-	while((iter <= vns->G_MAX) && ((t + vns->EVO_STEP + vns->VNS_POP) <= vns->TMAX)){
+	while((iter + 1 < vns->G_MAX) && ((t + vns->VNS_POP) <= vns->TMAX)){
 
 		
 #ifdef GRAFICO
