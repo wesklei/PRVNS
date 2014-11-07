@@ -91,6 +91,34 @@ void prepararObjFunc(int* FUNCTION, double* lb, double* ub)/*{{{*/
 			*lb = -10.00;
 			*ub = 10.00;
 			break;
+
+		//Shifted functions
+
+		case 25: //Shifted Sphere
+			*lb = -100.00;
+			*ub = 100.00;
+			break;
+		case 26: //Shifted Schwefel's Problem 2.21
+			*lb = -100.00;
+			*ub = 100.00;
+			break;
+		case 27: //Shifted Rosenbrock
+			*lb = -100.00;
+			*ub = 100.00;
+			break;
+		case 28: //Shifted Rastrigin
+			*lb = -5.12;
+			*ub = 5.12;
+			break;
+		case 29: //Shifted Griewank
+			*lb = -600.00;
+			*ub = 600.00;
+			break;
+		case 30: //Shifted Ackley
+			*lb = -32.00;
+			*ub = 32.00;
+			break;
+
 		default:
 			printf("Info: Invalid function.\n") ;
 			exit(0);
@@ -178,6 +206,26 @@ double objfunc(double sol[],const int* FUNCTION, const int* DIM, int *cont)/*{{{
 			return schwefels222(sol,*DIM);
 			break;
 	
+		//Shifted functions
+		
+		case 25: //Shifted_Sphere
+			return shifted_sphere(sol,*DIM);
+				break;
+		case 26: //Shifted Schwefel Problem 2.21
+			return shifted_schwefel_221(sol,*DIM);
+				break;
+		case 27: //Shifted_Rosenbrock
+			return shifted_rosenbrock(sol,*DIM);
+				break;
+		case 28: //Shifted Rastrigin
+			return shifted_rastrigin(sol,*DIM);
+				break;
+		case 29: //Shifted Griewank
+			return shifted_griewank(sol,*DIM);
+				break;
+		case 30://Shifted Ackley
+			return shifted_ackley(sol,*DIM);
+				break;
 		default:
 			printf("Info: Invalid function.\n") ;
 			exit(0);
@@ -383,9 +431,29 @@ char *getFunctionName(int FUNCTION){/*{{{*/
 			return "Rana";
 			break;
 		case 77: //  Schwefel's function 2.22
-			return " Schwefel's function 2.22";
+			return "Schwefel's function 2.22";
 			break;
 
+		//Shifted functions
+
+		case 25: //Shifted Sphere
+			return "Shifted Sphere";
+			break;
+		case 26: //Shifted Schwefel's Problem 2.21
+			return "Shifted Schwefel's Problem 2.21";
+			break;
+		case 27: //Shifted Rosenbrock
+			return "Shifted Rosenbrock";
+			break;
+		case 28: //Shifted Rastrigin
+			return "Shifted Rastrigin";
+			break;
+		case 29: //Shifted Griewank
+			return "Shifted Griewank";
+			break;
+		case 30: //Shifted Ackley
+			return "Shifted Ackley";
+			break;
 
 		default:
 			printf("Info: Invalid function.\n") ;
@@ -572,5 +640,102 @@ double schwefels222( double sol[], int DIM){/*{{{*/
 	}
 
 	return (aux+aux1);
+}/*}}}*/
+
+//=== Shifted Functions
+
+double shifted_sphere( double sol[], int DIM){/*{{{*/
+	// x* = o , F(x*) = f_bias1 = - 450
+	int i;
+	double Fx = 0.0;
+	double z = 0.0;
+	for(i=0;i<DIM;i++){
+		z = sol[i] - sphere_data[i];
+		Fx += z*z;
+	}
+	return Fx + f_bias[0];
+}/*}}}*/
+
+double shifted_schwefel_221( double sol[], int DIM){/*{{{*/
+	 //Shifted Schwefel Problem 2.21
+	// x* = o , F(x*) = f_bias1 = - 450
+	int i;
+	double Fx = 0.0;
+	double z = 0.0;
+		Fx = abss(sol[0]);
+		for(i=1;i<DIM;i++){
+	    	  z = sol[i] - schwefel_data[i];
+	          Fx = max(Fx , abss(z));
+    		}
+	return Fx + f_bias[1]; 
+}/*}}}*/
+
+double shifted_rosenbrock( double sol[], int DIM){/*{{{*/
+	int i;
+	double Fx = 0.0;
+	double zx[DIM];
+	//Shifted_Rosenbrock
+	// x* = o , F(x* ) = f_bias3 = 390
+
+	    for(i=0;i<DIM;i++) zx[i] = sol[i] - rosenbrock_data[i] + 1;   
+
+	    for(i=0;i<DIM-1;i++){    
+	        Fx = Fx + 100*( pow((pow(zx[i],2)-zx[i+1]) , 2) ) + pow((zx[i]-1) , 2);
+	    }
+	return Fx + f_bias[2]; 
+}/*}}}*/
+
+double shifted_rastrigin( double sol[], int DIM){/*{{{*/
+	int i;
+	double Fx = 0.0;
+	double z = 0.0;
+	double pi = acos(-1.0);
+	//Shifted Rastrigin
+	//x* = o , F( x * ) = f_bias4 = - 330
+	    for(i=0;i<DIM;i++){  
+	        z = sol[i] - rastrigin_data[i];
+	        Fx = Fx + ( pow(z,2) - 10*cos(2*pi*z) + 10);
+	    }
+	    return Fx + f_bias[3];
+}/*}}}*/
+
+double shifted_griewank( double sol[], int DIM){/*{{{*/
+	int i;
+	double z = 0.0;
+    	double top1 = 0.00, top2 = 0.00;
+	
+	//Shifted Griewank
+	//x* = o , F(x* ) = f_bias5 = -180
+	    top1 = 0;
+	    top2 = 1;
+	    for(i=0;i<DIM;i++){       
+	        z = sol[i] - griewank_data[i];
+	        top1 = top1 + ( pow(z,2) / 4000 );
+	        top2 = top2 * ( cos(z/sqrt(i+1)));
+	
+	    }
+	    return (top1 - top2 + 1 + f_bias[4]);
+}/*}}}*/
+
+double shifted_ackley( double sol[], int DIM){/*{{{*/
+	int i;
+	double Fx = 0.0;
+	double z = 0.0;
+    	double top1 = 0.00, top2 = 0.00;
+	double pi = acos(-1.0);
+	double e = exp(1.0);
+	
+	//Shifted Ackley
+	// x* = o , F(x* ) = f_bias6 = - 140
+	    top1 = 0;
+	    top2 = 0;
+	    Fx = 0;
+	    for(i=0;i<DIM;i++){   
+	        z = sol[i] - ackley_data[i];
+	        top1 = top1 + pow(z , 2 );
+	        top2 = top2 + cos(2*pi*z);
+	    }
+	    Fx = -20*exp(-0.2*sqrt(top1/DIM)) -exp(top2/DIM) + 20 + e + f_bias[5];
+	    return Fx;
 }/*}}}*/
 

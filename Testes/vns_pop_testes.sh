@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # codigos de funcoes do VNS
-FUNCTIONS_CODE=("0" "1" "2" "3" "4" "5" "7" "12" "13" "77")
-FUNCTIONS=( "RASTRIGIN" "SCHAFFER_F7" "GRIEWANK" "ACKLEY" "ROSENBROCK" "SPHERE" "SCHAFFER_F6" "LEVY" "ZAKHAROV"  "SCHWEFEL222" )
+FUNCTIONS_CODE=("0" "1" "2" "3" "4" "5" "7" "12" "13" "77" "25" "26" "27" "28" "29" "30" )
+FUNCTIONS=( "RASTRIGIN" "SCHAFFER_F7" "GRIEWANK" "ACKLEY" "ROSENBROCK" "SPHERE" "SCHAFFER_F6" "LEVY" "ZAKHAROV"  "SCHWEFEL222" "SHIFTED_SPHERE" "SFHITED_SCHWEFEL221" "SHIFTED_ROSENBROCK" "SHIFTED_RASTRIGIN" "SHIFTED_ACKLEY" )
 
 DIMENSIONS=("250")
 
@@ -51,10 +51,10 @@ P_CROSS=("0.9" )
 		do
 			# mkdir Convergencia
 			#wait finish before run more testes
-			while pgrep "alg" > /dev/null; do sleep 10; done
-				gnome-terminal -x sh -c "{ time ./alg $m/$f/250/input.in > $m/$f/250/output.out ; } 2>> $m/$f/250/output.out ;"
+			while pgrep "algorithm" > /dev/null; do sleep 10; done
+				gnome-terminal -x sh -c "{ time ./algorithm $m/$f/250/input.in > $m/$f/250/output.out ; } 2>> $m/$f/250/output.out ;"
 				sleep 1
-			while pgrep "alg" > /dev/null; do sleep 10; done
+			while pgrep "algorithm" > /dev/null; do sleep 10; done
 
 			# media=`ls Convergencia/*Media.data`
 			# melhor=`ls Convergencia/*Melhor.data`

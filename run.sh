@@ -3,7 +3,7 @@
 # gcc mersenne.o -o alg algorithm.c -lm
 make clean
 make
-mv alg Testes
+mv algorithm Testes
 cd Testes
 chmod +x vns_pop_testes.sh
 ./vns_pop_testes.sh

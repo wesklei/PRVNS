@@ -1,7 +1,5 @@
 /*Input file*/
 RUN = 30
-MAX_AVAL = 1
-POP_SIZE = 10
 DIM = 250
 FUNCTION = FUNCTIONS
 KMAX = 5

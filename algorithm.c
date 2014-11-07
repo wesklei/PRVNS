@@ -9,6 +9,20 @@
         To run: ./algorithm input.in
  */
 
+#ifndef max
+#define	max(x, y)	((x) > (y) ? (x) : (y))
+#endif
+
+#ifndef abss
+#define abss(a)     (a<0 ? (-a) : a)
+#endif
+
+typedef int bool;
+#define true 1
+#define false 0
+#define FAIL 0
+
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -21,11 +35,10 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <unistd.h> /* sleep() */
+#include <string.h>
 
-#define FAIL    0
-typedef int bool;
-#define true 1
-#define false 0
+
+
 
 typedef struct _VNS_SOLUTION
 {
@@ -68,7 +81,7 @@ typedef struct _VNS
 
 //Testes Diversidade PRVNS
 #define DEBUG  0 //1=> info, 2=> all
-#define GRAFICO  0//1=> convergencia pop, 2=> k
+#define GRAFICO  1//1=> convergencia pop, 2=> k
 
 double **fo_geracoes; //fo_geracoes[RUN][Ger]; Ger < G_MAX
 double *fo_mediaGeracoes; //fo_mediaGeracoes[Ger]; Ger < G_MAX
@@ -1740,36 +1753,40 @@ void grafico_linhas_x_y(char *data, char *xtitle, char *ytitle, char *title, cha
 
 
 	FILE * gnuplotPipe = popen ("gnuplot -persistent", "w");
+	if(!gnuplotPipe){
+	       printf("ERROR in gnuplotPipe!\n");
+	       return;
+	}
 
 	char filename_data[255];
 	sprintf(filename_data,"%s.data",filename);
 	FILE *f_data = fopen(filename_data, "w");
-	fprintf(f_data,data);
+	fputs(data,f_data);
 	fflush(f_data);
 	fclose(f_data);
 
-	fprintf(gnuplotPipe," set bmargin 7 \n"); 
-	fprintf(gnuplotPipe," unset colorbox \n");
-	fprintf(gnuplotPipe," set terminal png enhanced font 'Verdana,10' \n");
-	fprintf(gnuplotPipe," set output '");
-	fprintf(gnuplotPipe,filename);
-	fprintf(gnuplotPipe,".png' \n" );
-	fprintf(gnuplotPipe," set style line 2  lc rgb '#0404E9' lt 1 pt 7 \n"); //blue
+	fputs(" set bmargin 7 \n",gnuplotPipe); 
+	fputs(" unset colorbox \n",gnuplotPipe);
+	fputs(" set terminal png enhanced font 'Verdana,10' \n",gnuplotPipe);
+	fputs(" set output '",gnuplotPipe);
+	fputs(filename,gnuplotPipe);
+	fputs(".png' \n",gnuplotPipe );
+	fputs(" set style line 2  lc rgb '#0404E9' lt 1 pt 7 \n",gnuplotPipe); //blue
 
 	char paramaxis[1024];
 	sprintf(paramaxis," set xlabel '%s' \n set ylabel '%s' \n",xtitle,ytitle);
-	fprintf(gnuplotPipe,paramaxis);
+	fputs(paramaxis,gnuplotPipe);
 
 	char paramtitle[1024];
 	sprintf(paramtitle," set title '%s'\n ",title);
-	fprintf(gnuplotPipe,paramtitle);
+	fputs(paramtitle,gnuplotPipe);
 
 	char paramlegend[1024];
 	sprintf(paramlegend," plot '-' title '%s' ls 2 with lines\n",legend);
-	fprintf(gnuplotPipe,paramlegend);
-	fprintf(gnuplotPipe, data);
-	fprintf(gnuplotPipe,"e");
-	fprintf(gnuplotPipe,"\nquit");
+	fputs(paramlegend,gnuplotPipe);
+	fputs( data,gnuplotPipe);
+	fputs("e",gnuplotPipe);
+	fputs("\nquit",gnuplotPipe);
 	fflush(gnuplotPipe);
 	fclose(gnuplotPipe);
 }
@@ -1790,10 +1807,17 @@ void grafico_linhas_x_y(char *data, char *xtitle, char *ytitle, char *title, cha
 //			aceita caminhos para subdiretorios. Ex graficos/meugrafico
 void grafico_duas_linhas(char *data1,char *data2, char *xtitle, char *ytitle, char *title,  char *legend1, char *legend2, char *filename){
 
+	FILE * gnuplotPipe = popen ("gnuplot -persistent", "w");
+	if(!gnuplotPipe){
+		printf("ERROR in gnuplotPipe!\n");
+		printf("Something went wrong with popen()! %s\n", strerror(errno));
+	       return;
+	}
+
 	char filename_data1[255];
 	sprintf(filename_data1,"%s_%s.data",filename,legend1);
 	FILE *f_data = fopen(filename_data1, "w");
-	fprintf(f_data,data1);
+	fputs(data1,f_data);
 	fflush(f_data);
 	fclose(f_data);
 
@@ -1802,41 +1826,38 @@ void grafico_duas_linhas(char *data1,char *data2, char *xtitle, char *ytitle, ch
 	char filename_data2[255];
 	sprintf(filename_data2,"%s_%s.data",filename,legend2);
 	FILE *f_data2 = fopen(filename_data2, "w");
-	fprintf(f_data2,data2);
+	fputs(data2,f_data2);
 	fflush(f_data2);
 	fclose(f_data2);
 
 	free(data2);
 
-	FILE * gnuplotPipe = popen ("gnuplot -persistent", "w");
-	if(gnuplotPipe) printf("ERROR!\n");
-
-	fprintf(gnuplotPipe," set bmargin 7 \n"); 
-	fprintf(gnuplotPipe," unset colorbox \n");
-	fprintf(gnuplotPipe," set terminal png enhanced font 'Verdana,10' \n");
-	fprintf(gnuplotPipe," set output '");
-	fprintf(gnuplotPipe,filename);
-	fprintf(gnuplotPipe,".png' \n" );
-	fprintf(gnuplotPipe," set style line 2  lc rgb '#0404E9' lt 1 pt 7 \n"); //blue
-	fprintf(gnuplotPipe," set style line 3  lc rgb '#B22C2C' lt 1 pt 7 \n"); //blue
+	fputs(" set bmargin 7 \n",gnuplotPipe); 
+	fputs(" unset colorbox \n",gnuplotPipe);
+	fputs(" set terminal png enhanced font 'Verdana,10' \n",gnuplotPipe);
+	fputs(" set output '",gnuplotPipe);
+	fputs(filename,gnuplotPipe);
+	fputs(".png' \n",gnuplotPipe );
+	fputs(" set style line 2  lc rgb '#0404E9' lt 1 pt 7 \n",gnuplotPipe); //blue
+	fputs(" set style line 3  lc rgb '#B22C2C' lt 1 pt 7 \n",gnuplotPipe); //blue
 
 
 	char paramaxis[1024];
 	sprintf(paramaxis," set xlabel '%s' \n set ylabel '%s' \n",xtitle,ytitle);
-	fprintf(gnuplotPipe,paramaxis);
+	fputs(paramaxis,gnuplotPipe);
 
 	char paramtitle[1024];
 	sprintf(paramtitle," set title '%s'\n ",title);
-	fprintf(gnuplotPipe,paramtitle);
+	fputs(paramtitle,gnuplotPipe);
 
 	char paramplot1[1024];
 	sprintf(paramplot1," plot '%s' using 1:2 title '%s' ls 2 with lines, ",filename_data1,legend1);
 	char paramplot2[1024];
 	sprintf(paramplot2," '%s' using 1:2 title '%s' ls 3 with lines\n ",filename_data2,legend2);
-	fprintf(gnuplotPipe,paramplot1);
-	fprintf(gnuplotPipe,paramplot2);
+	fputs(paramplot1,gnuplotPipe);
+	fputs(paramplot2,gnuplotPipe);
 
-	fprintf(gnuplotPipe,"\nquit");
+	fputs("\nquit",gnuplotPipe);
 	fflush(gnuplotPipe);
 	fclose(gnuplotPipe);
 

@@ -8,7 +8,10 @@
         To compile:  Type: make
         To run: ./algorithm input.in
  */
+#ifndef functions_h
+#define functions_h
 
+#include "data.h"
 #define PI 3.14159265
 
 double rastrigin( double SOL[],  int DIM);
@@ -33,3 +36,12 @@ double generalized_holzman( double sol[], int DIM);
 double rana( double sol[], int DIM);
 double holzman( double sol[], int DIM);
 double schwefels222( double sol[], int DIM);
+double shifted_sphere( double sol[], int DIM);
+double shifted_schwefel_221( double sol[], int DIM);
+double shifted_rosenbrock( double sol[], int DIM);
+double shifted_rastrigin( double sol[], int DIM);
+double shifted_griewank( double sol[], int DIM);
+double shifted_ackley( double sol[], int DIM);
+
+
+#endif
