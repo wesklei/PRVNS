@@ -1,7 +1,7 @@
 /*Input file*/
 RUN = 30
 DIM = 250
-FUNCTION = 0
+FUNCTION = 7
 KMAX = 5
 TMAX = 500000
 Q = 2.8
