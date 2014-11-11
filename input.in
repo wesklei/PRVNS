@@ -1,7 +1,7 @@
 /*Input file*/
-RUN = 30
+RUN = 31
 DIM = 250
-FUNCTION = 7
+FUNCTION = 20
 KMAX = 5
 TMAX = 500000
 Q = 2.8
@@ -22,24 +22,36 @@ PC = 0.9
 /* RUN is the number of times the ECO alg will run.*/
 /* DIM is the number of problem variables. */
 /* FUNCTION represents the problem to be solved. The current options are:*/
-		/* .0: Rastrigin  		[  -5.12,   5.12]*/
-		/*. 1: Schaffer   		[-100.00, 100.00]*/
-		/*. 2: Griewank   		[-600.00, 600.00]*/
-		/*. 3: Ackley     		[ -32.00,  32.00]*/
-		/*. 4: Rosenbrock 		[ -30.00,  30.00]*/
-		/*. 5: Sphere     		[-100.00, 100.00]*/
-		/*6: Molecular Potential Energy [   0.00,   5.00]*/
-		/*7: Schaffer F6		[-100.00, 100.00]*/
-		/*8: GEneralized Schwefels	[-500.00, 500.00]*/
-		/*12: Levy Function		[ -10.00,  10.00]*/
-		/*13: Zakharov  		[  -5.00,  10.00]*/
-		/*14: Egg Holder		[-512.00, 512.00]*/
-		/*15: Holzman			[ -10.00,  10.00]*/
-		/*16: Michalewitz		[   0.00,     PI]*/
-		/*18: Powell			[ -10.00,  10.00]*/
-		/*19: Rana			[-512.00, 512.00]*/
-		/*20: Shubert			[  -4.00,   5.00]*/
-		/*. 77: Schwefel's function 2.22 [-10, 10]*/
+/*Number	Name	Range	Min	*/
+/*0:  	 Rastrigin  			[  -5.12,    5.12]		0		*/
+/*1:  	 Schaffer   			[-100.00,  100.00]		0		*/
+/*2: 	 Griewank   			[-600.00,  600.00]		0		*/
+/*3:	 Ackley     			[ -32.00,   32.00]		0		*/
+/*4:	 Rosenbrock 			[ -30.00,   30.00]		0		*/
+/*5:	 Sphere     			[-100.00,  100.00]		0		*/
+/*6:	 Molecular Potential Energy 	[   0.00,    5.00]		0		*/
+/*7:	 Schaffer F6			[-100.00,  100.00]		0		*/
+/*8:	 Generalized Schwefels		[-500.00,  500.00]		0		*/
+/*12:	 Levy				[ -10.00,   10.00]		0		*/
+/*13:	 Zakharov  			[  -5.00,   10.00]		0		*/
+/*14:	 Egg Holder			[-512.00,  512.00]	     	?		*/
+/*15:	 Holzman			[ -10.00,   10.00]		0		*/
+/*16:	 Michalewitz			[   0.00,      PI]	    -0.966*n		*/
+/*18:	 Powell				[ -10.00,   10.00]		0		*/
+/*19:	 Rana				[-512.00,  512.00]		?		*/
+/*20:	 Shubert			[  -4.00,    5.00]	    -24.062499		*/
+/*77:	 Schwefel's function 2.22	[    -10,      10]		0		*/
+/*25:	 Shifited Sphere		[   -100,     100]	      -450		*/
+/*26:	 Shifted Schwefel Problem 2.21	[   -100,     100]	      -450		*/
+/*27: 	 Shifted Rosenbrock		[   -100,     100]	       390		*/
+/*28:	 Shifted Rastrigin		[  -5.12,    5.12]	      -330		*/
+/*30:	 Shifted Ackley			[ -32.00,   32.00]	      -180		*/ 
+/*31:	 Shifted Schwefel 2.22		[ -10.00,   10.00]	      -140		*/ 
+/*32:	 Shifted Schwefel 1.2		[ -64.536, 65.536]		0		*/ 
+/*33:	 Shifted Extended_f10		[ -100,       100]		0		*/ 
+/*34:	 Shifted Bohachevsky		[ -15,         15]		0		*/ 
+/*35:	 Shifted Schaffer		[ -100,       100]		0		*/ 
+
 	/****VNS PARAMETERS****/
 /*K is the number of neighbourhood*/
 /*TMAX is the number os iterations*/

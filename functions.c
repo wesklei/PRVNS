@@ -1,13 +1,13 @@
 /* 
-        Description: The ANSI C code of the PRVNS approach
-        Programmer:  Wesklei Migliorini
-        E-mail:      wesklei.m@gmail.com
-        Date:	     04/11/2014
-        Lisence:     Free
-        Note:        The system was developed using Linux.
-        To compile:  Type: make
-        To run: ./algorithm input.in
- */
+Description: The ANSI C code of the PRVNS approach
+Programmer:  Wesklei Migliorini
+E-mail:      wesklei.m@gmail.com
+Date:	     04/11/2014
+Lisence:     Free
+Note:        The system was developed using Linux.
+To compile:  Type: make
+To run: ./algorithm input.in
+*/
 
 #include "functions.h"
 
@@ -27,11 +27,6 @@ void prepararObjFunc(int* FUNCTION, double* lb, double* ub)/*{{{*/
 			*ub = 600.00;
 			break;
 		case 3: //Ackley
-			/*
-			   -	Dimension: n arbitrary
-			   -       Domain:   -32 <= | x_i | <= 32.0
-			   -       Minimum 0 at x_i = 0.0
-			   */
 			*lb = -32.00;
 			*ub = 32.00;
 			break;
@@ -92,7 +87,7 @@ void prepararObjFunc(int* FUNCTION, double* lb, double* ub)/*{{{*/
 			*ub = 10.00;
 			break;
 
-		//Shifted functions
+			//Shifted functions
 
 		case 25: //Shifted Sphere
 			*lb = -100.00;
@@ -118,7 +113,26 @@ void prepararObjFunc(int* FUNCTION, double* lb, double* ub)/*{{{*/
 			*lb = -32.00;
 			*ub = 32.00;
 			break;
-
+		case 31: //Shifted Schwefel 2.22
+			*lb = -10.00;
+			*ub = 10.00;
+			break;
+		case 32: //Shifted Schwefel 1.2
+			*lb = -65.536;
+			*ub = 65.536;
+			break;
+		case 33: //Shifted Extended_f10
+			*lb = -100.00;
+			*ub = 100.00;
+			break;
+		case 34: //Shifted Bohachevsky
+			*lb = -15.00;
+			*ub = 15.00;
+			break;
+		case 35: //Shifted schaffer
+			*lb = -100.00;
+			*ub = 100.00;
+			break;
 		default:
 			printf("Info: Invalid function.\n") ;
 			exit(0);
@@ -131,101 +145,181 @@ double objfunc(double sol[],const int* FUNCTION, const int* DIM, int *cont)/*{{{
 
 	switch (*FUNCTION) {
 		case 0: //Rastrigin
-
 			return rastrigin(sol,*DIM);
-
 		case 1: //Schaffer
-
 			return schaffer(sol,*DIM);
-
 		case 2: //Griewank
-
 			return griewank(sol,*DIM);
-
 		case 3: //Ackley
-
 			return ackley(sol,*DIM);
-
 		case 4: //Rosenbrock
-
 			return rosenbrock(sol,*DIM);
-
 		case 5: //Sphere
-
 			return sphere(sol,*DIM);
-
 		case 6: //MPE
 			return mpe(sol,*DIM);
-
 		case 7: //SCHAFFER_F6
-
 			return schaffer_f6(sol,*DIM);
-
 			break;
 		case 8: //G_SCHWEFELS
-
 			return g_schwefels(sol,*DIM);
-
 			break;
-
 		case 12: // Levy Function
-			
 			return levy(sol,*DIM);
 			break;
 		case 13: // Zakharov
 			return zakharov(sol,*DIM);
 			break;
 		case 14: // EggHolder
-
 			return egg_holder(sol,*DIM);
 			break;
 		case 15: // Holzman
-			
 			return holzman(sol,*DIM);
 			break;
-
 		case 16: // Michalewitz
-			
 			return michalewitz(sol,*DIM);
 			break;
-
 		case 18: // Powell
 			return powell(sol,*DIM);
 			break;
-
 		case 19: // Rana
-
 			return rana(sol,*DIM);
 			break;
 		case 20: // Shubert
-
 			return shubert(sol,*DIM);
 			break;
 		case 77: //  Schwefel's function 2.22
-
 			return schwefels222(sol,*DIM);
 			break;
-	
-		//Shifted functions
-		
+
+			//Shifted functions
+
 		case 25: //Shifted_Sphere
 			return shifted_sphere(sol,*DIM);
-				break;
+			break;
 		case 26: //Shifted Schwefel Problem 2.21
 			return shifted_schwefel_221(sol,*DIM);
-				break;
+			break;
 		case 27: //Shifted_Rosenbrock
 			return shifted_rosenbrock(sol,*DIM);
-				break;
+			break;
 		case 28: //Shifted Rastrigin
 			return shifted_rastrigin(sol,*DIM);
-				break;
+			break;
 		case 29: //Shifted Griewank
 			return shifted_griewank(sol,*DIM);
-				break;
+			break;
 		case 30://Shifted Ackley
 			return shifted_ackley(sol,*DIM);
-				break;
+			break;
+		case 31: //Shifted Schwefel 2.22
+			return shifted_schwefel_222(sol,*DIM);
+			break;
+		case 32: //Shifted Schwefel 1.2
+			return shifted_schwefel_12(sol,*DIM);
+			break;
+		case 33: //Shifted Extended_f10
+			return shifted_extended_f10(sol,*DIM);
+			break;
+		case 34: //Shifted Bohachevsky
+			return shifted_bohachevsky(sol,*DIM);
+			break;
+		case 35: //Shifted schaffer
+			return shifted_schaffer(sol,*DIM);
+			break;
+		default:
+			printf("Info: Invalid function.\n") ;
+			exit(0);
+	}
+}/*}}}*/
+
+char *getFunctionName(int FUNCTION){/*{{{*/
+
+	switch (FUNCTION) {
+		case 0: //Rastrigin
+			return "Rastrigin";
+		case 1: //Schaffer
+			return "Schaffer F7";
+		case 2: //Griewank
+			return "Griewank";
+		case 3: //Ackley
+			return "Ackley";
+		case 4: //Rosenbrock
+			return "Rosenbrock";
+		case 5: //Sphere
+			return "Sphere";
+		case 6: //MPE
+			return "Molecular Potential Energy";
+		case 7: //SCHAFFER_F6
+			return "Schaffer F6";
+			break;
+		case 8: //G_SCHWEFELS
+			return "Generalized Schwefels";
+			break;
+		case 20: // Shubert
+			return "Shubert";
+			break;
+		case 16: // Michalewitz
+			return "Michalewitz";
+			break;
+		case 18: // Powell
+			return "Powell";
+			break;
+		case 12: // Levy
+			return "Levy";
+			break;
+		case 13: // Zakharov
+			return "Zakharov";
+			break;
+		case 14: // Egg holder
+			return "Egg holder";
+			break;
+		case 15: // Generalized Holzman
+			return "Generalized Holzman";
+			break;
+		case 19: // Rana
+			return "Rana";
+			break;
+		case 77: //  Schwefel's function 2.22
+			return "Schwefel's function 2.22";
+			break;
+
+			//Shifted functions
+
+		case 25: //Shifted Sphere
+			return "Shifted Sphere";
+			break;
+		case 26: //Shifted Schwefel's Problem 2.21
+			return "Shifted Schwefel's Problem 2.21";
+			break;
+		case 27: //Shifted Rosenbrock
+			return "Shifted Rosenbrock";
+			break;
+		case 28: //Shifted Rastrigin
+			return "Shifted Rastrigin";
+			break;
+		case 29: //Shifted Griewank
+			return "Shifted Griewank";
+			break;
+		case 30: //Shifted Ackley
+			return "Shifted Ackley";
+			break;
+		case 31: //Shifted Schwefel 2.22
+			return "Shifted Schwefel 2.22";
+			break;
+		case 32: //Shifted Schwefel 1.2
+			return "Shifted Schwefel 1.2";
+			break;
+		case 33: //Shifted Extended_f10
+			return "Shifted Extended_f10";
+			break;
+		case 34: //Shifted Bohachevsky
+			return "Shifted Bohachevsky";
+			break;
+		case 35: //Shifted schaffer
+			return "Shifted Schaffer";
+			break;
+
 		default:
 			printf("Info: Invalid function.\n") ;
 			exit(0);
@@ -358,107 +452,6 @@ double shubert(double SOL[],  int DIM){/*{{{*/
 	}
 
 	return sum/(DIM/2.0);
-}/*}}}*/
-
-char *getFunctionName(int FUNCTION){/*{{{*/
-
-	switch (FUNCTION) {
-		case 0: //Rastrigin
-
-			return "Rastrigin";
-
-		case 1: //Schaffer
-
-			return "Schaffer F7";
-
-		case 2: //Griewank
-
-			return "Griewank";
-
-		case 3: //Ackley
-
-			return "Ackley";
-
-		case 4: //Rosenbrock
-
-			return "Rosenbrock";
-
-		case 5: //Sphere
-
-			return "Sphere";
-
-		case 6: //MPE
-			return "Molecular Potential Energy";
-		case 7: //SCHAFFER_F6
-
-			return "Schaffer F6";
-
-			break;
-		case 8: //G_SCHWEFELS
-
-			return "Generalized Schwefels";
-
-			break;
-		case 20: // Shubert
-
-			return "Shubert";
-			break;
-		case 16: // Michalewitz
-
-			return "Michalewitz";
-			break;
-		case 18: // Powell
-			return "Powell";
-			break;
-
-		case 12: // Levy
-			return "Levy";
-			break;
-
-		case 13: // Zakharov
-			return "Zakharov";
-			break;
-
-		case 14: // Egg holder
-			return "Egg holder";
-			break;
-
-		case 15: // Generalized Holzman
-			return "Generalized Holzman";
-			break;
-
-		case 19: // Rana
-			return "Rana";
-			break;
-		case 77: //  Schwefel's function 2.22
-			return "Schwefel's function 2.22";
-			break;
-
-		//Shifted functions
-
-		case 25: //Shifted Sphere
-			return "Shifted Sphere";
-			break;
-		case 26: //Shifted Schwefel's Problem 2.21
-			return "Shifted Schwefel's Problem 2.21";
-			break;
-		case 27: //Shifted Rosenbrock
-			return "Shifted Rosenbrock";
-			break;
-		case 28: //Shifted Rastrigin
-			return "Shifted Rastrigin";
-			break;
-		case 29: //Shifted Griewank
-			return "Shifted Griewank";
-			break;
-		case 30: //Shifted Ackley
-			return "Shifted Ackley";
-			break;
-
-		default:
-			printf("Info: Invalid function.\n") ;
-			exit(0);
-	}
 }/*}}}*/
 
 double schaffer_f6( double sol[],  int DIM){/*{{{*/
@@ -611,15 +604,15 @@ Global minimum: ???
 double holzman( double sol[], int DIM){/*{{{*/
 	//Generalized Holzman
 	/*
-	   Dimension: n
-	   Domain: | x[i] | <= 10
-	   Global minimum: 0 at x[i] = 0
-	   */
+Dimension: n
+Domain: | x[i] | <= 10
+Global minimum: 0 at x[i] = 0
+*/
 	int i;
 	double aux = 0.0;
 	for (i = 0; i < DIM; i++) 
 	{
-	aux += i * pow(sol[i] , 4);
+		aux += i * pow(sol[i] , 4);
 	}
 	return aux;
 }/*}}}*/
@@ -657,16 +650,16 @@ double shifted_sphere( double sol[], int DIM){/*{{{*/
 }/*}}}*/
 
 double shifted_schwefel_221( double sol[], int DIM){/*{{{*/
-	 //Shifted Schwefel Problem 2.21
+	//Shifted Schwefel Problem 2.21
 	// x* = o , F(x*) = f_bias1 = - 450
 	int i;
 	double Fx = 0.0;
 	double z = 0.0;
-		Fx = abss(sol[0]);
-		for(i=1;i<DIM;i++){
-	    	  z = sol[i] - schwefel_data[i];
-	          Fx = max(Fx , abss(z));
-    		}
+	Fx = abss(sol[0]);
+	for(i=1;i<DIM;i++){
+		z = sol[i] - schwefel_data[i];
+		Fx = max(Fx , abss(z));
+	}
 	return Fx + f_bias[1]; 
 }/*}}}*/
 
@@ -677,11 +670,11 @@ double shifted_rosenbrock( double sol[], int DIM){/*{{{*/
 	//Shifted_Rosenbrock
 	// x* = o , F(x* ) = f_bias3 = 390
 
-	    for(i=0;i<DIM;i++) zx[i] = sol[i] - rosenbrock_data[i] + 1;   
+	for(i=0;i<DIM;i++) zx[i] = sol[i] - rosenbrock_data[i] + 1;   
 
-	    for(i=0;i<DIM-1;i++){    
-	        Fx = Fx + 100*( pow((pow(zx[i],2)-zx[i+1]) , 2) ) + pow((zx[i]-1) , 2);
-	    }
+	for(i=0;i<DIM-1;i++){    
+		Fx = Fx + 100*( pow((pow(zx[i],2)-zx[i+1]) , 2) ) + pow((zx[i]-1) , 2);
+	}
 	return Fx + f_bias[2]; 
 }/*}}}*/
 
@@ -692,50 +685,151 @@ double shifted_rastrigin( double sol[], int DIM){/*{{{*/
 	double pi = acos(-1.0);
 	//Shifted Rastrigin
 	//x* = o , F( x * ) = f_bias4 = - 330
-	    for(i=0;i<DIM;i++){  
-	        z = sol[i] - rastrigin_data[i];
-	        Fx = Fx + ( pow(z,2) - 10*cos(2*pi*z) + 10);
-	    }
-	    return Fx + f_bias[3];
+	for(i=0;i<DIM;i++){  
+		z = sol[i] - rastrigin_data[i];
+		Fx = Fx + ( pow(z,2) - 10*cos(2*pi*z) + 10);
+	}
+	return Fx + f_bias[3];
 }/*}}}*/
 
 double shifted_griewank( double sol[], int DIM){/*{{{*/
 	int i;
 	double z = 0.0;
-    	double top1 = 0.00, top2 = 0.00;
-	
+	double top1 = 0.00, top2 = 0.00;
+
 	//Shifted Griewank
 	//x* = o , F(x* ) = f_bias5 = -180
-	    top1 = 0;
-	    top2 = 1;
-	    for(i=0;i<DIM;i++){       
-	        z = sol[i] - griewank_data[i];
-	        top1 = top1 + ( pow(z,2) / 4000 );
-	        top2 = top2 * ( cos(z/sqrt(i+1)));
-	
-	    }
-	    return (top1 - top2 + 1 + f_bias[4]);
+	top1 = 0;
+	top2 = 1;
+	for(i=0;i<DIM;i++){       
+		z = sol[i] - griewank_data[i];
+		top1 = top1 + ( pow(z,2) / 4000 );
+		top2 = top2 * ( cos(z/sqrt(i+1)));
+
+	}
+	return (top1 - top2 + 1 + f_bias[4]);
 }/*}}}*/
 
 double shifted_ackley( double sol[], int DIM){/*{{{*/
 	int i;
 	double Fx = 0.0;
 	double z = 0.0;
-    	double top1 = 0.00, top2 = 0.00;
+	double top1 = 0.00, top2 = 0.00;
 	double pi = acos(-1.0);
 	double e = exp(1.0);
-	
+
 	//Shifted Ackley
 	// x* = o , F(x* ) = f_bias6 = - 140
-	    top1 = 0;
-	    top2 = 0;
-	    Fx = 0;
-	    for(i=0;i<DIM;i++){   
-	        z = sol[i] - ackley_data[i];
-	        top1 = top1 + pow(z , 2 );
-	        top2 = top2 + cos(2*pi*z);
-	    }
-	    Fx = -20*exp(-0.2*sqrt(top1/DIM)) -exp(top2/DIM) + 20 + e + f_bias[5];
-	    return Fx;
+	top1 = 0;
+	top2 = 0;
+	Fx = 0;
+	for(i=0;i<DIM;i++){   
+		z = sol[i] - ackley_data[i];
+		top1 = top1 + pow(z , 2 );
+		top2 = top2 + cos(2*pi*z);
+	}
+	Fx = -20*exp(-0.2*sqrt(top1/DIM)) -exp(top2/DIM) + 20 + e + f_bias[5];
+	return Fx;
 }/*}}}*/
 
+double shifted_schwefel_222(double sol[], int dim) /*{{{*/
+{
+	double sum, currentGen, prod;
+	int i;
+
+	sum = 0.0;
+	prod = 1.0;
+
+	for (i = 0; i < dim; i++) 
+	{
+		currentGen = fabs(sol[i]-data_shif_schwefels_222[i]);
+		sum += currentGen;
+		prod *= currentGen;
+	}
+
+	return sum + prod;
+}/*}}}*/
+
+double shifted_schwefel_12(double sol[], int dim)/*{{{*/
+{
+	double Sum=0.0, Val=0.0;
+	int i;
+
+	for (i = 0; i < dim; i++)
+	{  
+		Val += sol[i]-data_shif_schwefels_12[i];
+		Sum += Val * Val;
+	}
+
+	return Sum;
+}/*}}}*/
+
+double f_10(double x, double y)/*{{{*/
+{
+	double p, z, t;
+
+	p=(x*x+y*y);
+
+	z=pow(p, 0.25);
+	t=sin(50.0*pow(p, 0.1));
+	t=t*t+1.0;
+
+	return z*t;
+}/*}}}*/
+
+double shifted_extended_f10(double sol[], int dim)/*{{{*/
+{
+	double suma=0.0;
+	int i;
+
+	for(i=0; i<dim-1; i++)
+		suma+=f_10(sol[i]-data_shif_extendedf10[i], sol[i+1]-data_shif_extendedf10[i+1]);
+
+	suma+=f_10(sol[dim-1]-data_shif_extendedf10[dim-1], sol[0]-data_shif_extendedf10[0]);
+
+	return suma;
+}/*}}}*/
+
+double shifted_bohachevsky(double sol[], int dim) /*{{{*/
+{   
+	double sum = 0.0;
+	int i;
+	double currentGen;
+	double nextGen;
+
+	currentGen = sol[0]-data_shif_bohachevsky[0];
+
+	for (i = 1; i < dim; i++) 
+	{
+		nextGen = sol[i]-data_shif_bohachevsky[i];
+		sum += currentGen * currentGen + 2.0 * nextGen * nextGen;
+		sum += -0.3 * cos(3.0 * PI * currentGen) -0.4 * cos(4.0 * PI * nextGen) + 0.7;
+		currentGen = nextGen;
+	}
+
+	return sum;
+}/*}}}*/
+
+double shifted_schaffer(double sol[], int dim) /*{{{*/
+{
+	int i=0;
+	double sum;
+	double aux, aux2;
+	double currentGen, nextGen;
+
+	sum = 0.0;
+	currentGen = sol[0]-data_shif_schaffer[i];
+	currentGen = currentGen * currentGen;
+
+	for (i = 1; i < dim; i++) 
+	{
+		nextGen = sol[i]-data_shif_schaffer[i];
+		nextGen = nextGen * nextGen;
+		aux = currentGen + nextGen;
+		currentGen = nextGen;
+		aux2 = sin(50. * pow(aux, 0.1));
+		sum += pow(aux, 0.25) * (aux2 * aux2 + 1.0);
+	}
+
+	return sum;
+}/*}}}*/
