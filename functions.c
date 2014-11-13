@@ -50,6 +50,18 @@ void prepararObjFunc(int* FUNCTION, double* lb, double* ub)/*{{{*/
 			*lb = -500.00;
 			*ub = 500.00;
 			break;
+		case 9: // Step function
+			*lb = -100.00;
+			*ub = 100.00;
+			break;
+		case 10: // Generalized Schwefel's function 2.26
+			*lb = -500.00;
+			*ub = 500.00;
+			break;
+		case 11: // Generalized Penalized function #1
+			*lb = -500.00;
+			*ub = 500.00;
+			break;
 		case 12: // Levy Function
 			*lb = -10.00;
 			*ub = 10.00;
@@ -70,6 +82,10 @@ void prepararObjFunc(int* FUNCTION, double* lb, double* ub)/*{{{*/
 			*lb = 0.00;
 			*ub = PI;
 			break;
+		case 17: // Generalized penalized function #2
+			*lb = -50.00;
+			*ub = 50.00;
+			break;
 		case 18: // Powell
 			*lb = -4.00;
 			*ub = 5.00;
@@ -82,7 +98,15 @@ void prepararObjFunc(int* FUNCTION, double* lb, double* ub)/*{{{*/
 			*lb = -10.00;
 			*ub = 10.00;
 			break;
-		case 77: // Schwefels 222
+		case 21: //StretchedV
+			*lb = -10.00;
+			*ub = 10.00;
+			break;
+		case 22: // Multimod 
+			*lb = -10.00;
+			*ub = 10.00;
+			break;
+		case 23: // Schwefels 222
 			*lb = -10.00;
 			*ub = 10.00;
 			break;
@@ -164,6 +188,15 @@ double objfunc(double sol[],const int* FUNCTION, const int* DIM, int *cont)/*{{{
 		case 8: //G_SCHWEFELS
 			return g_schwefels(sol,*DIM);
 			break;
+		case 9: // Step Function
+			return step(sol,*DIM);
+			break;
+		case 10: // Generalized Schwefel's function 2.26
+			return schwefel226(sol,*DIM);
+			break;
+		case 11: // Generalized Penalized function #1
+			return penalized1(sol,*DIM);
+			break;
 		case 12: // Levy Function
 			return levy(sol,*DIM);
 			break;
@@ -179,6 +212,9 @@ double objfunc(double sol[],const int* FUNCTION, const int* DIM, int *cont)/*{{{
 		case 16: // Michalewitz
 			return michalewitz(sol,*DIM);
 			break;
+		case 17: // Generalized Penalized function #2
+			return penalized2(sol,*DIM);
+			break;
 		case 18: // Powell
 			return powell(sol,*DIM);
 			break;
@@ -188,7 +224,13 @@ double objfunc(double sol[],const int* FUNCTION, const int* DIM, int *cont)/*{{{
 		case 20: // Shubert
 			return shubert(sol,*DIM);
 			break;
-		case 77: //  Schwefel's function 2.22
+		case 21: // StretchedV
+			return stretchedV(sol,*DIM);
+			break;
+		case 22: // Multimod
+			return multimod(sol,*DIM);
+			break;
+		case 23: //  Schwefel's function 2.22
 			return schwefels222(sol,*DIM);
 			break;
 
@@ -256,14 +298,14 @@ char *getFunctionName(int FUNCTION){/*{{{*/
 		case 8: //G_SCHWEFELS
 			return "Generalized Schwefels";
 			break;
-		case 20: // Shubert
-			return "Shubert";
+		case 9: // Step function
+			return "Step";
 			break;
-		case 16: // Michalewitz
-			return "Michalewitz";
+		case 10: // Generalized Schwefel's function 2.26
+			return "Generalized Schwefel's function 2.26";
 			break;
-		case 18: // Powell
-			return "Powell";
+		case 11: // Generalized Penalized function #1
+			return "Generalized Penalized function #1";
 			break;
 		case 12: // Levy
 			return "Levy";
@@ -277,10 +319,28 @@ char *getFunctionName(int FUNCTION){/*{{{*/
 		case 15: // Generalized Holzman
 			return "Generalized Holzman";
 			break;
+		case 16: // Michalewitz
+			return "Michalewitz";
+			break;
+		case 17: // Generalized penalized function #2
+			return "Generalized penalized function #2";
+			break;
+		case 18: // Powell
+			return "Powell";
+			break;
 		case 19: // Rana
 			return "Rana";
 			break;
-		case 77: //  Schwefel's function 2.22
+		case 20: // Shubert
+			return "Shubert";
+			break;
+		case 21: //StretchedV
+			return "StretchedV";
+			break;
+		case 22: //Multimod
+			return "Multimod";
+			break;
+		case 23: //  Schwefel's function 2.22
 			return "Schwefel's function 2.22";
 			break;
 
@@ -326,36 +386,36 @@ char *getFunctionName(int FUNCTION){/*{{{*/
 	}
 }/*}}}*/
 
-double rastrigin( double SOL[],  int DIM){/*{{{*/
-	//SOL[] -> the population set
-	//DIM the dimension of SOL[]
+double rastrigin( double sol[],  int DIM){/*{{{*/
+	//sol[] -> the population set
+	//DIM the dimension of sol[]
 	int j;
 	double top = 0.00;
 
 	for(j=0;j<DIM;j++)
 	{
-		top=top+(pow(SOL[j],(double)2)-10*cos(2*M_PI*SOL[j])+10);
+		top=top+(pow(sol[j],(double)2)-10*cos(2*M_PI*sol[j])+10);
 	}
 	return top;
 }/*}}}*/
 
-double schaffer( double SOL[],  int DIM){/*{{{*/
-	//SOL[] -> the population set
-	//DIM the dimension of SOL[]
+double schaffer( double sol[],  int DIM){/*{{{*/
+	//sol[] -> the population set
+	//DIM the dimension of sol[]
 
 	int j;
 	double top = 0.00 , top1 = 0.00;
 
 	for(j=0;j<DIM;j++)
 	{
-		top=top+(pow(SOL[j],(double)2));
+		top=top+(pow(sol[j],(double)2));
 	}
 
 	top = pow(top,(double)0.25);
 
 	for(j=0;j<DIM;j++)
 	{
-		top1=top1+(pow(SOL[j],(double)2));
+		top1=top1+(pow(sol[j],(double)2));
 	}
 
 	top1=pow(top1,(double)0.1);
@@ -364,26 +424,26 @@ double schaffer( double SOL[],  int DIM){/*{{{*/
 	return top*top1;
 }/*}}}*/
 
-double griewank( double SOL[],  int DIM){/*{{{*/
-	//SOL[] -> the population set
-	//DIM the dimension of SOL[]
+double griewank( double sol[],  int DIM){/*{{{*/
+	//sol[] -> the population set
+	//DIM the dimension of sol[]
 
 	int j;
 	double top = 0.00 , top1 = 0.00, top2 = 0.00;
 
 	for(j=0;j<DIM;j++)
 	{
-		top1=top1+pow((SOL[j]),(double)2);
-		top2=top2*cos((((SOL[j])/sqrt((double)(j+1)))*M_PI)/180);
+		top1=top1+pow((sol[j]),(double)2);
+		top2=top2*cos((((sol[j])/sqrt((double)(j+1)))*M_PI)/180);
 	}
 	top=(1/(double)4000)*top1-top2+1;
 
 	return top;
 }/*}}}*/
 
-double ackley( double SOL[],  int DIM){/*{{{*/
-	//SOL[] -> the population set
-	//DIM the dimension of SOL[]
+double ackley( double sol[],  int DIM){/*{{{*/
+	//sol[] -> the population set
+	//DIM the dimension of sol[]
 
 	int i;	
 	double aux = 0.0;
@@ -391,49 +451,49 @@ double ackley( double SOL[],  int DIM){/*{{{*/
 
 	for (i = 0; i < DIM; i++)
 	{
-		aux += SOL[i]*SOL[i];
+		aux += sol[i]*sol[i];
 	}
 	for (i = 0; i < DIM; i++)
 	{
-		aux1 += cos(2.0*M_PI*SOL[i]);
+		aux1 += cos(2.0*M_PI*sol[i]);
 	}
 
 	return (-20.0*(exp(-0.2*sqrt(1.0/(float)DIM*aux)))-exp(1.0/(float)DIM*aux1)+20.0+exp(1));
 }/*}}}*/
 
-double rosenbrock( double SOL[],  int DIM){/*{{{*/
-	//SOL[] -> the population set
-	//DIM the dimension of SOL[]
+double rosenbrock( double sol[],  int DIM){/*{{{*/
+	//sol[] -> the population set
+	//DIM the dimension of sol[]
 
 	int i;
 	double top = 0.00;
 
 	for (i = 0; i < DIM-1; i++)
 	{
-		top=top+100.*pow((SOL[i+1] - pow(SOL[i],2.)),2) + pow((1. - SOL[i]),2);
+		top=top+100.*pow((sol[i+1] - pow(sol[i],2.)),2) + pow((1. - sol[i]),2);
 	}
 
 	return top;
 }/*}}}*/
 
-double sphere( double SOL[],  int DIM){/*{{{*/
-	//SOL[] -> the population set
-	//DIM the dimension of SOL[]
+double sphere( double sol[],  int DIM){/*{{{*/
+	//sol[] -> the population set
+	//DIM the dimension of sol[]
 
 	int j;
 	double top = 0.00;
 
 	for(j=0;j<DIM;j++)
 	{
-		top=top+SOL[j]*SOL[j];
+		top=top+sol[j]*sol[j];
 	}
 
 	return top;
 }/*}}}*/
 
-double shubert(double SOL[],  int DIM){/*{{{*/
-	//SOL[] -> the population set
-	//DIM the dimension of SOL[]
+double shubert(double sol[],  int DIM){/*{{{*/
+	//sol[] -> the population set
+	//DIM the dimension of sol[]
 	//Shubert
 	/*
 	   -   Domain  |x| <= 10.0
@@ -444,11 +504,11 @@ double shubert(double SOL[],  int DIM){/*{{{*/
 	double sum = 0.0;
 	int i;
 	for (i = 0; i < DIM; i++) {
-		sum += -sin(2.0*SOL[i]+1.0)
-			-2.0*sin(3.0*SOL[i]+2.0)
-			-3.0*sin(4.0*SOL[i]+3.0)
-			-4.0*sin(5.0*SOL[i]+4.0)
-			-5.0*sin(6.0*SOL[i]+5.0);
+		sum += -sin(2.0*sol[i]+1.0)
+			-2.0*sin(3.0*sol[i]+2.0)
+			-3.0*sin(4.0*sol[i]+3.0)
+			-4.0*sin(5.0*sol[i]+4.0)
+			-5.0*sin(6.0*sol[i]+5.0);
 	}
 
 	return sum/(DIM/2.0);
@@ -635,6 +695,141 @@ double schwefels222( double sol[], int DIM){/*{{{*/
 	return (aux+aux1);
 }/*}}}*/
 
+double stretchedV( double sol[], int DIM){/*{{{*/
+	//StretchedV
+	/*
+	   - Domain:  | x_i | <= 10.0
+	   Global minimum is 0.0 at x_i = 0.00
+	   */
+	double sum = 0.0;
+	double aux;
+	int i;
+	for (i = 0; i < DIM-1; i++) {
+		aux = sol[i+1]*sol[i+1] + sol[i]*sol[i];
+		sum += pow(aux, 0.25) * (pow(sin(50.0 * pow(aux, 0.1)), 2.0)+1.0);
+	}
+	return sum;
+}/*}}}*/
+
+double step(double sol[], int DIM){/*{{{*/
+	// Step function
+	/*
+	   -   Domain: | x_i  | < 100.0
+	   -   Global minimum is 0.0 at x_i = 0.5
+	   */
+	double aux,aux1=0.0;
+	int i;
+	for (i=0;i<DIM;i++)
+	{
+		aux = (sol[i]+0.5);
+		aux1 += aux*aux; 
+	}
+	return (aux1);
+}/*}}}*/
+
+double schwefel226(double sol[], int DIM){/*{{{*/
+	//Generalized Schwefel's function 2.26
+	//known_optimal = -418.982887272433 at  sol(i)=420.9687
+	double aux=0.0;
+	int i;
+	for (i=0;i<DIM;i++)
+	{
+		aux += sol[i]*sin(sqrt(fabs(sol[i]))); 
+	}
+	return(-1*aux/DIM);
+}/*}}}*/
+
+double tempValue(double x,int a,int k,int m)/*{{{*/
+{
+	double temp = 0.0;
+	if( x > a)
+	{
+		temp = k*pow(x-a,m);
+	}
+	else if( x <= a && x >= -a)
+	{
+		temp = 0.0;
+	}
+	else
+	{
+		temp = k*pow(-x-a,m);
+	}
+	return temp;
+}/*}}}*/
+
+double penalized1(double sol[], int DIM){/*{{{*/
+	//Generalized Penalized function #1
+	// -500 <= xi <= 500
+	//known_optimal = 1.57044103551786e-032;
+	
+	double aux=0.0;
+	double aux1=0.0;
+	int i;
+	double *y = (double*) malloc (DIM * sizeof(double));
+	for (i=0;i<DIM;i++)
+	{
+		y[i]=0.0;
+	}
+
+	for (i=0;i<DIM;i++)
+	{
+		y[i]=1+(sol[i]+1)/4.0;
+	}
+
+	for (i=0;i<DIM-1;i++)
+	{
+		aux += pow(y[i]-1,2.0)*(1.0+10.0*pow(sin(PI*y[i+1]),2.0)); 
+	}
+	for (i=0;i<DIM;i++)
+	{
+		aux1 += tempValue(sol[i],10,100,4);
+	}
+
+	aux = (10.0*pow(sin(PI*y[0]),2.0)+aux+pow(y[DIM-1]-1,2))*PI/DIM+aux1;
+
+	free(y);
+
+	return ( aux );
+}/*}}}*/
+
+double penalized2(double sol[], int DIM){/*{{{*/
+	//Generalized Penalized function #2
+	//known_optimal = 1.34969464963992e-032;
+	double aux= 0.0;
+	double aux1=0.0;
+	int i;
+	for (i=0;i<DIM-1;i++)
+	{
+		aux += pow(sol[i]-1,2.0)*(1.0+10.0*pow(sin(3*PI*sol[i+1]),2.0)); 
+	}
+	for (i=0;i<DIM;i++)
+	{
+		aux1 += tempValue(sol[i],5,100,4);
+	}
+
+	return ( (pow(sin(3.0*PI*sol[0]),2.0)+aux+pow(sol[DIM-1]-1,2.0)
+				*(1.0+pow(sin(2.0*PI*sol[DIM-1]),2.0)))/10.0+aux1 );
+}/*}}}*/
+
+
+double multimod(double sol[], int DIM){/*{{{*/
+	//Multimod
+	/*
+	Dimension: n
+	Domain: -10<= x[i] <= 10
+	Global minimum: x[0] = 0
+	*/
+	double s,p,t;
+	int i;
+	s = p = fabs(sol[0]);
+	for (i = 1; i < DIM; i++) {
+		t = fabs(sol[i]);
+		s += t;
+		p *= t;
+	}
+	return s + p;
+}/*}}}*/
+
 //=== Shifted Functions
 
 double shifted_sphere( double sol[], int DIM){/*{{{*/
@@ -732,7 +927,7 @@ double shifted_ackley( double sol[], int DIM){/*{{{*/
 	return Fx;
 }/*}}}*/
 
-double shifted_schwefel_222(double sol[], int dim) /*{{{*/
+double shifted_schwefel_222(double sol[], int DIM) /*{{{*/
 {
 	double sum, currentGen, prod;
 	int i;
@@ -740,7 +935,7 @@ double shifted_schwefel_222(double sol[], int dim) /*{{{*/
 	sum = 0.0;
 	prod = 1.0;
 
-	for (i = 0; i < dim; i++) 
+	for (i = 0; i < DIM; i++) 
 	{
 		currentGen = fabs(sol[i]-data_shif_schwefels_222[i]);
 		sum += currentGen;
@@ -750,12 +945,12 @@ double shifted_schwefel_222(double sol[], int dim) /*{{{*/
 	return sum + prod;
 }/*}}}*/
 
-double shifted_schwefel_12(double sol[], int dim)/*{{{*/
+double shifted_schwefel_12(double sol[], int DIM)/*{{{*/
 {
 	double Sum=0.0, Val=0.0;
 	int i;
 
-	for (i = 0; i < dim; i++)
+	for (i = 0; i < DIM; i++)
 	{  
 		Val += sol[i]-data_shif_schwefels_12[i];
 		Sum += Val * Val;
@@ -777,20 +972,20 @@ double f_10(double x, double y)/*{{{*/
 	return z*t;
 }/*}}}*/
 
-double shifted_extended_f10(double sol[], int dim)/*{{{*/
+double shifted_extended_f10(double sol[], int DIM)/*{{{*/
 {
 	double suma=0.0;
 	int i;
 
-	for(i=0; i<dim-1; i++)
+	for(i=0; i<DIM-1; i++)
 		suma+=f_10(sol[i]-data_shif_extendedf10[i], sol[i+1]-data_shif_extendedf10[i+1]);
 
-	suma+=f_10(sol[dim-1]-data_shif_extendedf10[dim-1], sol[0]-data_shif_extendedf10[0]);
+	suma+=f_10(sol[DIM-1]-data_shif_extendedf10[DIM-1], sol[0]-data_shif_extendedf10[0]);
 
 	return suma;
 }/*}}}*/
 
-double shifted_bohachevsky(double sol[], int dim) /*{{{*/
+double shifted_bohachevsky(double sol[], int DIM) /*{{{*/
 {   
 	double sum = 0.0;
 	int i;
@@ -799,7 +994,7 @@ double shifted_bohachevsky(double sol[], int dim) /*{{{*/
 
 	currentGen = sol[0]-data_shif_bohachevsky[0];
 
-	for (i = 1; i < dim; i++) 
+	for (i = 1; i < DIM; i++) 
 	{
 		nextGen = sol[i]-data_shif_bohachevsky[i];
 		sum += currentGen * currentGen + 2.0 * nextGen * nextGen;
@@ -810,7 +1005,7 @@ double shifted_bohachevsky(double sol[], int dim) /*{{{*/
 	return sum;
 }/*}}}*/
 
-double shifted_schaffer(double sol[], int dim) /*{{{*/
+double shifted_schaffer(double sol[], int DIM) /*{{{*/
 {
 	int i=0;
 	double sum;
@@ -821,7 +1016,7 @@ double shifted_schaffer(double sol[], int dim) /*{{{*/
 	currentGen = sol[0]-data_shif_schaffer[i];
 	currentGen = currentGen * currentGen;
 
-	for (i = 1; i < dim; i++) 
+	for (i = 1; i < DIM; i++) 
 	{
 		nextGen = sol[i]-data_shif_schaffer[i];
 		nextGen = nextGen * nextGen;
@@ -833,3 +1028,4 @@ double shifted_schaffer(double sol[], int dim) /*{{{*/
 
 	return sum;
 }/*}}}*/
+

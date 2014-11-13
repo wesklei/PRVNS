@@ -14,9 +14,12 @@
 #include "data.h"
 #define PI 3.14159265
 
+//aux methods
 void prepararObjFunc(int* FUNCTION, double* lb, double* ub);
 double objfunc(double sol[], const int* FUNCTION, const int* DIM, int *cont);
 char *getFunctionName(int FUNCTION);
+
+//functions
 double rastrigin( double SOL[],  int DIM);
 double schaffer( double SOL[],  int DIM);
 double griewank( double SOL[],  int DIM);
@@ -36,6 +39,15 @@ double generalized_holzman( double sol[], int DIM);
 double rana( double sol[], int DIM);
 double holzman( double sol[], int DIM);
 double schwefels222( double sol[], int DIM);
+double stretchedV( double sol[], int DIM);
+double step(double sol[], int DIM);
+double schwefel226(double sol[], int DIM);
+double penalized1(double sol[], int DIM);
+double penalized2(double sol[], int DIM);
+double TempValue(double x,int a,int k,int m);
+double multimod(double sol[], int DIM);
+
+//shifted functions
 double shifted_sphere( double sol[], int DIM);
 double shifted_schwefel_221( double sol[], int DIM);
 double shifted_rosenbrock( double sol[], int DIM);
@@ -48,6 +60,5 @@ double f_10(double x, double y);// auxiliar
 double shifted_extended_f10(double sol[], int dim);
 double shifted_bohachevsky(double sol[], int dim);
 double shifted_schaffer(double sol[], int dim);
-
 
 #endif
