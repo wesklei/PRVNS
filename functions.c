@@ -46,17 +46,13 @@ void prepararObjFunc(int* FUNCTION, double* lb, double* ub)/*{{{*/
 			*lb = -100.00;
 			*ub = 100.00;
 			break;
-		case 8: //G_SCHWEFELS
+		case 8: //Generalized Schwefel's function 2.26 
 			*lb = -500.00;
 			*ub = 500.00;
 			break;
 		case 9: // Step function
 			*lb = -100.00;
 			*ub = 100.00;
-			break;
-		case 10: // Generalized Schwefel's function 2.26
-			*lb = -500.00;
-			*ub = 500.00;
 			break;
 		case 11: // Generalized Penalized function #1
 			*lb = -500.00;
@@ -185,14 +181,11 @@ double objfunc(double sol[],const int* FUNCTION, const int* DIM, int *cont)/*{{{
 		case 7: //SCHAFFER_F6
 			return schaffer_f6(sol,*DIM);
 			break;
-		case 8: //G_SCHWEFELS
+		case 8: //Generalized Schwefel's function 2.26
 			return g_schwefels(sol,*DIM);
 			break;
 		case 9: // Step Function
 			return step(sol,*DIM);
-			break;
-		case 10: // Generalized Schwefel's function 2.26
-			return schwefel226(sol,*DIM);
 			break;
 		case 11: // Generalized Penalized function #1
 			return penalized1(sol,*DIM);
@@ -296,13 +289,10 @@ char *getFunctionName(int FUNCTION){/*{{{*/
 			return "Schaffer F6";
 			break;
 		case 8: //G_SCHWEFELS
-			return "Generalized Schwefels";
+			return "Generalized Schwefels 2.26";
 			break;
 		case 9: // Step function
 			return "Step";
-			break;
-		case 10: // Generalized Schwefel's function 2.26
-			return "Generalized Schwefel's function 2.26";
 			break;
 		case 11: // Generalized Penalized function #1
 			return "Generalized Penalized function #1";
@@ -725,18 +715,6 @@ double step(double sol[], int DIM){/*{{{*/
 		aux1 += aux*aux; 
 	}
 	return (aux1);
-}/*}}}*/
-
-double schwefel226(double sol[], int DIM){/*{{{*/
-	//Generalized Schwefel's function 2.26
-	//known_optimal = -418.982887272433 at  sol(i)=420.9687
-	double aux=0.0;
-	int i;
-	for (i=0;i<DIM;i++)
-	{
-		aux += sol[i]*sin(sqrt(fabs(sol[i]))); 
-	}
-	return(-1*aux/DIM);
 }/*}}}*/
 
 double tempValue(double x,int a,int k,int m)/*{{{*/

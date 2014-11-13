@@ -41,7 +41,6 @@ double holzman( double sol[], int DIM);
 double schwefels222( double sol[], int DIM);
 double stretchedV( double sol[], int DIM);
 double step(double sol[], int DIM);
-double schwefel226(double sol[], int DIM);
 double penalized1(double sol[], int DIM);
 double penalized2(double sol[], int DIM);
 double TempValue(double x,int a,int k,int m);

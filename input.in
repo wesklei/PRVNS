@@ -24,16 +24,15 @@ PC = 0.9
 /* FUNCTION represents the problem to be solved. The current options are:*/
 /*N	 Name	                		Range		Min        */
 /*0:  Rastrigin  			[  -5.12,    5.12]	0	   */
-/*1:  Schaffer   			[-100.00,  100.00]	0	   */
+/*1:  Schaffer F7 			[-100.00,  100.00]	0	   */
 /*2:  Griewank   			[-600.00,  600.00]	0	   */
 /*3:  Ackley     			[ -32.00,   32.00]	0	   */
 /*4:  Rosenbrock 			[ -30.00,   30.00]	0	   */
 /*5:  Sphere     			[-100.00,  100.00]	0	   */
 /*6:  Molecular Potential Energy 	[   0.00,    5.00]	0	   */
 /*7:  Schaffer F6			[-100.00,  100.00]	0	   */
-/*8:  Generalized Schwefels		[-500.00,  500.00]	0	   */
+/*8:  Generalized Schwefels 2.26	[-500.00,  500.00]	0	   */
 /*9:  Step 				[   -100,     100]	0	   */
-/*10: Generalized Schwefel's  2.26	[   -500,     500]  -418.9829	   */
 /*11: Generalized Penalized function #1 [    -50,      50]  1.57e-032	   */
 /*12: Levy				[ -10.00,   10.00]	0	   */
 /*13: Zakharov  			[  -5.00,   10.00]	0	   */
