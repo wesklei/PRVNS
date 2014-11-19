@@ -262,6 +262,33 @@ double objfunc(double sol[],const int* FUNCTION, const int* DIM, int *cont)/*{{{
 		case 35: //Shifted schaffer
 			return shifted_schaffer(sol,*DIM);
 			break;
+
+			//Hybrid functions
+			
+		case 36: //Hybrid 1
+			return hybrid_1(sol,*DIM);
+			break;
+		case 37: //Hybrid 2
+			return hybrid_2(sol,*DIM);
+			break;
+		case 38: //Hybrid 3
+			return hybrid_3(sol,*DIM);
+			break;
+		case 39: //Hybrid 4
+			return hybrid_4(sol,*DIM);
+			break;
+		case 40: //Hybrid 5
+			return hybrid_5(sol,*DIM);
+			break;
+		case 41: //Hybrid 6
+			return hybrid_6(sol,*DIM);
+			break;
+		case 42: //Hybrid 7
+			return hybrid_7(sol,*DIM);
+			break;
+		case 43: //Hybrid 8
+			return hybrid_8(sol,*DIM);
+			break;
 		default:
 			printf("Info: Invalid function.\n") ;
 			exit(0);
@@ -789,7 +816,6 @@ double penalized2(double sol[], int DIM){/*{{{*/
 				*(1.0+pow(sin(2.0*PI*sol[DIM-1]),2.0)))/10.0+aux1 );
 }/*}}}*/
 
-
 double multimod(double sol[], int DIM){/*{{{*/
 	//Multimod
 	/*
@@ -1005,5 +1031,221 @@ double shifted_schaffer(double sol[], int DIM) /*{{{*/
 	}
 
 	return sum;
+}/*}}}*/
+
+//=== Hybrid Functions
+
+static void divideFunctions(double sol[], int DIM, double *part1, double *part2, double m, int *psize1, int *psize2) {/*{{{*/
+	int shared;
+	int rest, i, total;
+	double *partrest;
+
+	if (m <= 0.5) {
+		partrest = part2;
+	}
+	else {
+		partrest = part1;
+		m = 1-m;
+	}
+
+	shared = (int) floor(DIM*m);
+	rest = 2*shared;
+
+	for (i = 0; i < shared; i++) {
+		part1[i] = sol[i*2];
+		part2[i] = sol[i*2+1];
+	}
+	total = DIM-shared;
+
+	for (i = 0; i < total-shared; i++) {
+		partrest[i+shared] = sol[i+rest];
+	}
+
+	*psize1 = shared;
+	*psize2 = DIM-shared;
+
+	if (partrest == part1) {
+		int temp = *psize1;
+		*psize1 = *psize2;
+		*psize2 = temp;
+	}
+}/*}}}*/
+
+double Extended_f_10NoDesplazamiento(double sol[], int DIM)/*{{{*/
+{
+	double suma=0.0;
+
+	int i;
+	for(i=0; i<DIM-1; i++)
+		suma+=f_10(sol[i], sol[i+1]);
+
+	suma+=f_10(sol[DIM-1], sol[0]);
+
+	return suma;
+}/*}}}*/
+
+double f_BohachevskyNoDesplazamiento(double sol[], int DIM) /*{{{*/
+{   
+    double sum = 0.0;
+    int i;
+    double currentGen;
+    double nextGen;
+
+    currentGen = sol[0];
+
+    for (i = 1; i < DIM; i++) 
+    {
+        nextGen = sol[i];
+        sum += currentGen * currentGen + 2.0 * nextGen * nextGen;
+	double c1=cos(3.0 * PI * currentGen);
+	double c2=cos(4.0 * PI * nextGen);
+        sum += 0.7 -(0.3*c1+0.4*c2);
+        currentGen = nextGen;
+    }
+
+    return sum;
+}/*}}}*/
+
+double f_Schwefel2_22NoDesplazamiento(double sol[], int DIM) /*{{{*/
+{
+    double sum, currentGen, prod;
+
+    sum = 0.0;
+    prod = 1.0;
+
+    int i;
+    for (i = 0; i < DIM; i++) 
+    {
+        currentGen = fabs(sol[i]);
+        sum += currentGen;
+        prod *= currentGen;
+    }
+
+    return sum + prod;
+}/*}}}*/
+
+double hybrid_1(double sol[], int DIM) /*{{{*/ //12
+{
+	double part1[DIM], part2[DIM];
+	int size1, size2;
+	double f1, f2;
+	divideFunctions(sol, DIM, part1, part2, 0.25, &size1, &size2);
+
+	f1=Extended_f_10NoDesplazamiento(part1,size1);
+	f2=shifted_sphere(part2,size2)-f_bias[0];
+	assert(f1 >= 0);
+	assert(f2 >= 0);
+
+	return f1+f2;
+}/*}}}*/
+
+double hybrid_2(double sol[], int DIM) /*{{{*/ //13
+{
+	double part1[DIM], part2[DIM];
+	int size1, size2;
+	double f1, f2;
+
+	divideFunctions(sol, DIM, part1, part2, 0.25, &size1, &size2);
+	f1=Extended_f_10NoDesplazamiento(part1,size1);
+	f2=shifted_rosenbrock(part2,size2)-f_bias[2];
+
+	return f1+f2;
+}/*}}}*/
+
+double hybrid_3(double sol[], int DIM) /*{{{*/ //14
+{
+	double part1[DIM], part2[DIM];
+	int size1, size2;
+	double f1, f2;
+	divideFunctions(sol, DIM, part1, part2, 0.25, &size1, &size2);
+
+	f1=Extended_f_10NoDesplazamiento(part1,size1);
+	f2=shifted_rastrigin(part2,size2)-f_bias[3];
+
+	return f1+f2; 
+}/*}}}*/
+
+double hybrid_4(double sol[], int DIM) /*{{{*/ //15
+{
+	double part1[DIM], part2[DIM];
+	double desp[DIM];
+	int size1, size2;
+	double f1, f2;
+	int i;
+
+	for (i = 0; i < DIM; ++i) {
+		desp[i] = sol[i] - f15[i];
+	}
+
+	divideFunctions(desp, DIM, part1, part2, 0.25, &size1, &size2);
+
+	f1=f_BohachevskyNoDesplazamiento(part1, size1);
+	f2=f_Schwefel2_22NoDesplazamiento(part2, size2);
+	return f1+f2; 
+}/*}}}*/
+
+double hybrid_5(double sol[], int DIM) /*{{{*/ //16new
+{
+	double part1[DIM], part2[DIM];
+	int size1, size2;
+	double f1, f2;
+	divideFunctions(sol, DIM, part1, part2, 0.5, &size1, &size2);
+
+	f1=Extended_f_10NoDesplazamiento(part1,size1);
+	assert(f1 >= 0);
+	f2=shifted_sphere(part2, size2)-f_bias[0];
+	assert(f2 >= 0);
+
+	return f1+f2;
+}/*}}}*/
+
+double hybrid_6(double sol[], int DIM) /*{{{*/ //17new
+{
+	double part1[DIM], part2[DIM];
+	int size1, size2;
+	double f1, f2;
+
+	divideFunctions(sol, DIM, part1, part2, 0.75, &size1, &size2);
+	f1=Extended_f_10NoDesplazamiento(part1, size1);
+	f2=shifted_rosenbrock(part2, size2)-f_bias[2];
+
+	return f1+f2;
+}/*}}}*/
+
+double hybrid_7(double sol[], int DIM) /*{{{*/ //18new
+{
+	double part1[DIM], part2[DIM];
+	int size1, size2;
+	double f1=0;
+	double f2=0;
+
+	divideFunctions(sol, DIM, part1, part2, 0.75, &size1, &size2);
+
+	f1=Extended_f_10NoDesplazamiento(part1, size1);
+	f2=shifted_rastrigin(part2, size2)-f_bias[3];
+	assert(isfinite(f1));
+	assert(isfinite(f2));
+
+	return f1+f2;
+}/*}}}*/
+
+double hybrid_8(double sol[], int DIM) /*{{{*/ //19new
+{
+	double part1[DIM], part2[DIM];
+	int size1, size2;
+	double desp[DIM];
+	double f1, f2;
+
+	int i;
+	for (i = 0; i < DIM; ++i) {
+		desp[i] = sol[i] - f19[i];
+	}
+
+	divideFunctions(desp, DIM, part1, part2, 0.75, &size1, &size2);
+
+	f1=f_BohachevskyNoDesplazamiento(part1, size1);
+	f2=f_Schwefel2_22NoDesplazamiento(part2, size2);
+
+	return f1+f2;
 }/*}}}*/
 

@@ -56,6 +56,14 @@ PC = 0.9
 /*33: Shifted Extended_f10		[ -100,       100]	0	   */ 
 /*34: Shifted Bohachevsky		[ -15,         15]	0	   */ 
 /*35: Shifted Schaffer			[ -100,       100]	0	   */ 
+/*36: Hybrid 1				[ -100,       100]	0	   */ 
+/*37: Hybrid 2				[   -5,         5]	0	   */ 
+/*38: Hybrid 3				[  -10,        10]	0	   */ 
+/*39: Hybrid 4				[ -100,       100]	0	   */ 
+/*40: Hybrid 5				[ -100,       100]	0	   */ 
+/*41: Hybrid 6				[ -100,       100]	0	   */ 
+/*42: Hybrid 7				[   -5,         5]	0	   */ 
+/*43: Hybrid 8				[  -10,       -10]	0	   */ 
 
 	/****VNS PARAMETERS****/
 /*K is the number of neighbourhood*/

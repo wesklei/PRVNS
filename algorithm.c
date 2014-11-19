@@ -81,7 +81,7 @@ typedef struct _VNS
 
 //Testes Diversidade PRVNS
 #define DEBUG  0 //1=> info, 2=> all
-#define GRAFICO  0//1=> convergencia pop, 2=> k
+#define GRAFICO  1//1=> convergencia pop, 2=> k
 
 double **fo_geracoes; //fo_geracoes[RUN][Ger]; Ger < G_MAX
 double *fo_mediaGeracoes; //fo_mediaGeracoes[Ger]; Ger < G_MAX
