@@ -153,6 +153,42 @@ void prepararObjFunc(int* FUNCTION, double* lb, double* ub)/*{{{*/
 			*lb = -100.00;
 			*ub = 100.00;
 			break;
+
+			//Hybrid functions
+
+		case 36: //Hybrid 1
+			*lb = -100.00;
+			*ub = 100.00;
+			break;
+		case 37: //Hybrid 2
+			*lb = -5.00;
+			*ub = 5.00;
+			break;
+		case 38: //Hybrid 3
+			*lb = -10.00;
+			*ub = 10.00;
+			break;
+		case 39: //Hybrid 4
+			*lb = -100.00;
+			*ub = 100.00;
+			break;
+		case 40: //Hybrid 5
+			*lb = -100.00;
+			*ub = 100.00;
+			break;
+		case 41: //Hybrid 6
+			*lb = -100.00;
+			*ub = 100.00;
+			break;
+		case 42: //Hybrid 7
+			*lb = -5.00;
+			*ub = 5.00;
+			break;
+		case 43: //Hybrid 8
+			*lb = -10.00;
+			*ub = 10.00;
+			break;
+
 		default:
 			printf("Info: Invalid function.\n") ;
 			exit(0);
@@ -164,6 +200,7 @@ double objfunc(double sol[],const int* FUNCTION, const int* DIM, int *cont)/*{{{
 	*cont+=1;
 
 	switch (*FUNCTION) {
+
 		case 0: //Rastrigin
 			return rastrigin(sol,*DIM);
 		case 1: //Schaffer
@@ -395,6 +432,33 @@ char *getFunctionName(int FUNCTION){/*{{{*/
 			break;
 		case 35: //Shifted schaffer
 			return "Shifted Schaffer";
+			break;
+
+			//Hybrid functions
+
+		case 36: //Hybrid 1
+			return "Hybrid 1";
+			break;
+		case 37: //Hybrid 2
+			return "Hybrid 2";
+			break;
+		case 38: //Hybrid 3
+			return "Hybrid 3";
+			break;
+		case 39: //Hybrid 4
+			return "Hybrid 4";
+			break;
+		case 40: //Hybrid 5
+			return "Hybrid 5";
+			break;
+		case 41: //Hybrid 6
+			return "Hybrid 6";
+			break;
+		case 42: //Hybrid 7
+			return "Hybrid 7";
+			break;
+		case 43: //Hybrid 8
+			return "Hybrid 8";
 			break;
 
 		default:

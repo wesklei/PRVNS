@@ -1,7 +1,7 @@
 /*Input file*/
 RUN = 30
 DIM = 250
-FUNCTION = 22
+FUNCTION = 0
 KMAX = 5
 TMAX = 500000
 Q = 2.8
@@ -63,7 +63,7 @@ PC = 0.9
 /*40: Hybrid 5				[ -100,       100]	0	   */ 
 /*41: Hybrid 6				[ -100,       100]	0	   */ 
 /*42: Hybrid 7				[   -5,         5]	0	   */ 
-/*43: Hybrid 8				[  -10,       -10]	0	   */ 
+/*43: Hybrid 8				[  -10,        10]	0	   */ 
 
 	/****VNS PARAMETERS****/
 /*K is the number of neighbourhood*/
